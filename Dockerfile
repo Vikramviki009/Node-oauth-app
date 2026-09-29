@@ -11,7 +11,7 @@ COPY  src/ ./src/
 RUN npm run build
 
 # Stage 2: Production Runner
-FROM node:lts-alpine as runner
+FROM node:lts-alpine AS runner
 WORKDIR /app
 ENV NODE_ENV=production
 
