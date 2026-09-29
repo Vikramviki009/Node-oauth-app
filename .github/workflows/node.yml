@@ -1,0 +1,39 @@
+name: node advance oauth project ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build-and-verify:
+    name: build & verify
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-server: [24.x]
+    services:
+      mongodb:
+        image: mongo:latest
+        ports:
+          - 27017:27017
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Set up nodejs ${{ matrix.node-server }}
+        uses: actions/setup-node@v5
+        with:
+          node-version: ${{ matrix.node-server }}
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build the app
+        env:
+          MONGODB_URI: mongodb://127.0.0.1:27017/
+        run: npm run build
